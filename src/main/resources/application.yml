@@ -1,0 +1,45 @@
+server:
+  port: 8082
+spring:
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
+  datasource:
+    username: postgres
+    password: docker
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/KRYDB
+    hikari:
+      username:
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+
+---
+
+spring:
+  profiles: qa
+  datasource:
+    username: postgres
+    password: docker
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/KRYDB
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+---
+
+spring:
+  profiles: prod
+  datasource:
+    username: postgres
+    password: docker
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/KRYDB
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+
