@@ -8,7 +8,7 @@ spring:
   profiles: dev
   datasource:
     username: postgres
-    password : docker
+    password: docker
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/KRYDEVDB
   jpa:
@@ -20,7 +20,7 @@ spring:
   profiles: qa
   datasource:
     username: postgres
-    password : docker
+    password: docker
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/KRYQAVDB
   jpa:
@@ -32,7 +32,7 @@ spring:
   profiles: prod
   datasource:
     username: postgres
-    password : docker
+    password: docker
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/KRYPRODVDB
   jpa:
