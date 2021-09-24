@@ -1,6 +1,7 @@
 package com.kry.monitor.service;
 
 import com.kry.monitor.entity.RequestUser;
+import com.kry.monitor.error.DataNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,17 +9,18 @@ import java.util.List;
 @Service
 public interface RequestUserService {
 
-    List<RequestUser> fetchUsers();
 
-    RequestUser saveUser(RequestUser serviceTask);
+    List<RequestUser> fetchUsers() throws DataNotFoundException;
 
-    RequestUser fetchByUserServiceById(Long id);
+    RequestUser saveUser(RequestUser requestUser);
 
-    void deleteUserService(Long departmentId);
+    RequestUser fetchByUserById(Long id) throws DataNotFoundException;
 
-    RequestUser updateUserService(Long departmentId, RequestUser requestUser);
+    void deleteUser(Long userId);
 
-    RequestUser fetchByUserServiceByName(String departmentName);
+    RequestUser updateUser(Long userId, RequestUser requestUser) throws DataNotFoundException;
 
-    RequestUser fetchByUserServiceByNameByIgnoreCase(String departmentName);
+    RequestUser fetchByUserByName(String userName);
+
+    RequestUser fetchByUserByNameByIgnoreCase(String userName);
 }

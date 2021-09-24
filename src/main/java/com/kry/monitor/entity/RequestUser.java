@@ -27,6 +27,6 @@ public class RequestUser {
     private String userName;
     private String password;
     private String userStatus;
-    private Date creationTime;
+    private Date dateCreated;
 }
 

@@ -12,9 +12,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ResponseStatus
 public class RestResponseEntityResponseHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(RecordNotFoundException.class)
-    public ResponseEntity<ErrorMessage> serviceTaskNotFoundException(RecordNotFoundException recordNotFoundException, WebRequest webRequest) {
-        ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND, recordNotFoundException.getMessage());
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseEntity<ErrorMessage> dataNotFoundException(DataNotFoundException dataNotFoundException, WebRequest webRequest) {
+        ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND, dataNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
 

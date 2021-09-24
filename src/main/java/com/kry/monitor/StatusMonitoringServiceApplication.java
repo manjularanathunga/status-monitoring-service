@@ -9,7 +9,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 
 
-@ComponentScan({"com.kry.monitor.service", "com.kry.monitor.repository"})
+@ComponentScan({"com.kry.monitor.service", "com.kry.monitor.repository","com.kry.monitor.controller","com.kry.monitor.error"})
 @SpringBootApplication
 public class StatusMonitoringServiceApplication {
 
@@ -17,12 +17,4 @@ public class StatusMonitoringServiceApplication {
         SpringApplication.run(StatusMonitoringServiceApplication.class, args);
     }
 
-    @Bean(name = "postgresDS")
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/MSMR");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("docker");
-        return dataSource;
-    }
 }
