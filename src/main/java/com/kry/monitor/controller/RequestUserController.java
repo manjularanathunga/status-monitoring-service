@@ -20,11 +20,6 @@ public class RequestUserController {
     @Autowired
     private RequestUserService requestUserService;
 
-    @GetMapping("/departments")
-    public String hello() {
-        return "requestUserService.fetchUsers()";
-    }
-
     @GetMapping("/users")
     public List<RequestUser> fetchUserServices() throws DataNotFoundException {
         return requestUserService.fetchUsers();

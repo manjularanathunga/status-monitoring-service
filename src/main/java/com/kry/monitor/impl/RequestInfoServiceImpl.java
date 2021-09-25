@@ -31,7 +31,7 @@ public class RequestInfoServiceImpl implements RequestInfoService {
 
     @Override
     public RequestInfo saveRequestInfo(RequestInfo requestInfo) {
-        return null;
+        return requestInfoRepository.save(requestInfo);
     }
 
     @Override
@@ -47,6 +47,52 @@ public class RequestInfoServiceImpl implements RequestInfoService {
         RequestInfo requestInfo = requestInfoRepository.saveAndFlush(dbReqInfo);
         ServiceList.pushList(fetchServiceByStatus(true));
         return requestInfo;
+    }
+
+    @Override
+    public RequestInfo fetchByRequestInfoById(Long serviceId) throws DataNotFoundException {
+        Optional<RequestInfo> opsReq = requestInfoRepository.findById(serviceId);
+        if (!opsReq.isPresent()) {
+            throw new DataNotFoundException("User not available");
+        }
+        return opsReq.get();
+    }
+
+    @Override
+    public void deleteRequestInfo(Long serviceId) throws DataNotFoundException {
+        Optional<RequestInfo> opsReq = requestInfoRepository.findById(serviceId);
+        if (!opsReq.isPresent()) {
+            throw new DataNotFoundException("User not available");
+        }
+        RequestInfo service = opsReq.get();
+        requestInfoRepository.delete(opsReq.get());
+        LOGGER.info("Service [" + service.getServiceName() + "]removed from the system ....");
+    }
+
+    @Override
+    public RequestInfo updateRequestInfo(Long serviceId, RequestInfo requestInfo) throws DataNotFoundException {
+        Optional<RequestInfo> opsReq = requestInfoRepository.findById(serviceId);
+        if (!opsReq.isPresent()) {
+            throw new DataNotFoundException("User not available");
+        }
+        RequestInfo reqInfoDb = opsReq.get();
+        reqInfoDb.setServiceName(requestInfo.getServiceName());
+        reqInfoDb.setRequestUrl(requestInfo.getRequestUrl());
+        reqInfoDb.setDescription(requestInfo.getDescription());
+        reqInfoDb.setMonitorUserId(requestInfo.getMonitorUserId());
+        reqInfoDb.setReqStatus(requestInfo.isReqStatus());
+        reqInfoDb.setCreationTime(new Date());
+        return requestInfoRepository.save(reqInfoDb);
+    }
+
+    @Override
+    public RequestInfo fetchByRequestInfoByName(String serviceName) {
+        return requestInfoRepository.findByServiceName(serviceName);
+    }
+
+    @Override
+    public RequestInfo fetchByRequestInfoByNameByIgnoreCase(String serviceName) {
+        return requestInfoRepository.findByServiceNameIgnoreCase(serviceName);
     }
 
     @Override

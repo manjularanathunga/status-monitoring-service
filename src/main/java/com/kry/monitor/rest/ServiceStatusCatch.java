@@ -34,7 +34,7 @@ public class ServiceStatusCatch {
         infoList.forEach((e) -> {
             catchStatus.put(e.getServiceID().toString(), new ServiceStatus(e.getServiceStatus(), new Date()));
         });
-        System.out.println("ServiceStatusCatch{} : " + catchStatus.toString());
+        System.out.println("ServiceStatusCatch{} : " + catchStatus);
     }
 
     public static Map<String, ServiceStatus> getAllServices() {

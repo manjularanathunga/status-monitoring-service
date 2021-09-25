@@ -22,7 +22,7 @@ public interface RequestUserService {
 
     RequestUser fetchByUserById(Long id) throws DataNotFoundException;
 
-    void deleteUser(Long userId);
+    void deleteUser(Long userId) throws DataNotFoundException;
 
     RequestUser updateUser(Long userId, RequestUser requestUser) throws DataNotFoundException;
 

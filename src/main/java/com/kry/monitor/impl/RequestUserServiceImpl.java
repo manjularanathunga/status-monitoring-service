@@ -54,8 +54,14 @@ public class RequestUserServiceImpl implements RequestUserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
-
+    public void deleteUser(Long userId) throws DataNotFoundException {
+        Optional<RequestUser> opsUsr = requestUserRepository.findById(userId);
+        if (!opsUsr.isPresent()) {
+            throw new DataNotFoundException("User not available");
+        }
+        RequestUser user = opsUsr.get();
+        requestUserRepository.delete(opsUsr.get());
+        LOGGER.info("User [" + user.getUserName() + "]removed from the system ....");
     }
 
     @Override
@@ -65,19 +71,9 @@ public class RequestUserServiceImpl implements RequestUserService {
             throw new DataNotFoundException("User not available");
         }
         RequestUser dbUser = opsUsr.get();
-
-        if (!dbUser.getUserName().equalsIgnoreCase(requestUser.getUserName())) {
-            dbUser.setUserName(requestUser.getUserName());
-        }
-
-        if (!dbUser.getPassword().equalsIgnoreCase(requestUser.getPassword())) {
-            dbUser.setPassword(requestUser.getPassword());
-        }
-
-        if (!dbUser.getUserStatus() == (requestUser.getUserStatus())) {
-            dbUser.setUserStatus(requestUser.getUserStatus());
-        }
-
+        dbUser.setUserName(requestUser.getUserName());
+        dbUser.setPassword(requestUser.getPassword());
+        dbUser.setUserStatus(requestUser.getUserStatus());
         return requestUserRepository.save(dbUser);
     }
 

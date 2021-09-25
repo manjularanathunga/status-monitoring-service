@@ -17,5 +17,15 @@ public interface RequestInfoService {
     RequestInfo updateStatusById(Long serviceId, String serviceStatus) throws DataNotFoundException;
 
     void updateDatabase(Map<String, ServiceStatus> serviceList);
+
+    RequestInfo fetchByRequestInfoById(Long serviceId) throws DataNotFoundException;
+
+    void deleteRequestInfo(Long serviceId) throws DataNotFoundException;
+
+    RequestInfo updateRequestInfo(Long serviceId, RequestInfo requestInfo) throws DataNotFoundException;
+
+    RequestInfo fetchByRequestInfoByName(String serviceName);
+
+    RequestInfo fetchByRequestInfoByNameByIgnoreCase(String serviceName);
 }
 

@@ -15,4 +15,8 @@ public interface RequestInfoRepository extends JpaRepository<RequestInfo, Long> 
     List<RequestInfo> findAllByReqStatus(Boolean status);
 
     List<RequestInfo> findAllByMonitorUserId(Long monitorUserId);
+
+    RequestInfo findByServiceName(String serviceName);
+
+    RequestInfo findByServiceNameIgnoreCase(String serviceName);
 }
