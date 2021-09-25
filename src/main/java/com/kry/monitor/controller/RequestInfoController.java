@@ -6,6 +6,7 @@ import com.kry.monitor.service.RequestInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,50 +22,59 @@ public class RequestInfoController {
     private RequestInfoService requestInfoService;
 
     @GetMapping("/service/dashboard")
-    public List<RequestInfo> fetchDashboardServiceById() {
-        return requestInfoService.fetchDashboardServices();
+    public ResponseEntity<List<RequestInfo>> fetchDashboardServiceById() {
+        return ResponseEntity.ok()
+                .body(requestInfoService.fetchDashboardServices());
     }
 
     @GetMapping("/service/dashboard/{id}")
-    public List<RequestInfo> fetchDashboardServiceByUserId(@PathVariable Long userId) {
-        return requestInfoService.fetchDashboardServiceByUserId(userId);
+    public ResponseEntity<List<RequestInfo>> fetchDashboardServiceByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok()
+                .body(requestInfoService.fetchDashboardServiceByUserId(userId));
     }
 
     @GetMapping("/service")
-    public List<RequestInfo> fetchServices() throws DataNotFoundException {
-        return requestInfoService.fetchServices();
+    public ResponseEntity<List<RequestInfo>> fetchServices() throws DataNotFoundException {
+        return ResponseEntity.ok()
+                .body(requestInfoService.fetchServices());
     }
 
     @PostMapping("/service")
     @ResponseBody
-    public RequestInfo saveRequestInfo(@Valid @RequestBody RequestInfo requestInfo) {
-        LOGGER.info("Save ServiceTask");
-        return requestInfoService.saveRequestInfo(requestInfo);
+    public ResponseEntity<RequestInfo> saveRequestInfo(@Valid @RequestBody RequestInfo requestInfo) {
+        return ResponseEntity.ok()
+                .body(requestInfoService.saveRequestInfo(requestInfo));
+
     }
 
     @GetMapping("/service/{id}")
-    public RequestInfo fetchByRequestInfoServiceById(@PathVariable Long serviceId) throws DataNotFoundException {
-        return requestInfoService.fetchByRequestInfoById(serviceId);
+    public ResponseEntity<RequestInfo> fetchByRequestInfoServiceById(@PathVariable Long serviceId) throws DataNotFoundException {
+        return ResponseEntity.ok()
+                .body(requestInfoService.fetchByRequestInfoById(serviceId));
     }
 
     @DeleteMapping("/service/{id}")
-    public String deleteRequestInfoService(@PathVariable("id") Long serviceId) throws DataNotFoundException {
+    public ResponseEntity<String> deleteRequestInfoService(@PathVariable("id") Long serviceId) throws DataNotFoundException {
         requestInfoService.deleteRequestInfo(serviceId);
-        return "ServiceTask Delete successfully";
+        return ResponseEntity.ok()
+                .body("ServiceTask Delete successfully");
     }
 
     @PutMapping("/service/{id}")
-    public RequestInfo updateRequestInfoService(@PathVariable("id") Long serviceId, @RequestBody RequestInfo requestInfo) throws DataNotFoundException {
-        return requestInfoService.updateRequestInfo(serviceId, requestInfo);
+    public ResponseEntity<RequestInfo> updateRequestInfoService(@PathVariable("id") Long serviceId, @RequestBody RequestInfo requestInfo) throws DataNotFoundException {
+        return ResponseEntity.ok()
+                .body(requestInfoService.updateRequestInfo(serviceId, requestInfo));
     }
 
     @GetMapping("/service/name/{name}")
-    public RequestInfo fetchByRequestInfoServiceByName(@PathVariable("name") String serviceName) {
-        return requestInfoService.fetchByRequestInfoByName(serviceName);
+    public ResponseEntity<RequestInfo> fetchByRequestInfoServiceByName(@PathVariable("name") String serviceName) {
+        return ResponseEntity.ok()
+                .body(requestInfoService.fetchByRequestInfoByName(serviceName));
     }
 
     @GetMapping("/service/casename/{name}")
-    public RequestInfo fetchByRequestInfoServiceByNameByIgnoreCase(@PathVariable("name") String serviceName) {
-        return requestInfoService.fetchByRequestInfoByNameByIgnoreCase(serviceName);
+    public ResponseEntity<RequestInfo> fetchByRequestInfoServiceByNameByIgnoreCase(@PathVariable("name") String serviceName) {
+        return ResponseEntity.ok()
+                .body(requestInfoService.fetchByRequestInfoByNameByIgnoreCase(serviceName));
     }
 }
