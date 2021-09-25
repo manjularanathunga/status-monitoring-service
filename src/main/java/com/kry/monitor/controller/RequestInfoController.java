@@ -19,7 +19,7 @@ public class RequestInfoController {
     @Autowired
     private RequestInfoService requestInfoService;
 
-    @PostMapping("/user")
+    @PostMapping("/service")
     @ResponseBody
     public RequestInfo saveRequestInfo(@Valid @RequestBody RequestInfo requestInfo) {
         LOGGER.info("Save ServiceTask");

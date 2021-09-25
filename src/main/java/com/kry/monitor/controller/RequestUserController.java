@@ -38,7 +38,7 @@ public class RequestUserController {
     }
 
     @DeleteMapping("/user/{id}")
-    public String deleteUserService(@PathVariable("id") Long userId) {
+    public String deleteUserService(@PathVariable("id") Long userId) throws DataNotFoundException {
         requestUserService.deleteUser(userId);
         return "ServiceTask Delete successfully";
     }
