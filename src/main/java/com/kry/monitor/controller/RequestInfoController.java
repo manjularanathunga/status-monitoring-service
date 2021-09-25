@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/")
@@ -18,6 +19,21 @@ public class RequestInfoController {
 
     @Autowired
     private RequestInfoService requestInfoService;
+
+    @GetMapping("/service/dashboard")
+    public List<RequestInfo> fetchDashboardServiceById() {
+        return requestInfoService.fetchDashboardServices();
+    }
+
+    @GetMapping("/service/dashboard/{id}")
+    public List<RequestInfo> fetchDashboardServiceByUserId(@PathVariable Long userId) {
+        return requestInfoService.fetchDashboardServiceByUserId(userId);
+    }
+
+    @GetMapping("/service")
+    public List<RequestInfo> fetchServices() throws DataNotFoundException {
+        return requestInfoService.fetchServices();
+    }
 
     @PostMapping("/service")
     @ResponseBody

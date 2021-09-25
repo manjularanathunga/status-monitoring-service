@@ -10,6 +10,8 @@ import java.util.Map;
 
 public interface RequestInfoService {
 
+    List<RequestInfo> fetchServices();
+
     List<RequestInfo> fetchServiceByStatus(boolean b);
 
     RequestInfo saveRequestInfo(RequestInfo requestInfo);
@@ -27,5 +29,9 @@ public interface RequestInfoService {
     RequestInfo fetchByRequestInfoByName(String serviceName);
 
     RequestInfo fetchByRequestInfoByNameByIgnoreCase(String serviceName);
+
+    List<RequestInfo> fetchDashboardServices();
+
+    List<RequestInfo> fetchDashboardServiceByUserId(Long userId);
 }
 

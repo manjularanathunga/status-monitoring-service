@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RequestInfoServiceImpl implements RequestInfoService {
@@ -23,6 +24,11 @@ public class RequestInfoServiceImpl implements RequestInfoService {
 
     @Autowired
     RequestInfoRepository requestInfoRepository;
+
+    @Override
+    public List<RequestInfo> fetchServices() {
+        return requestInfoRepository.findAll();
+    }
 
     @Override
     public List<RequestInfo> fetchServiceByStatus(boolean b) {
@@ -93,6 +99,19 @@ public class RequestInfoServiceImpl implements RequestInfoService {
     @Override
     public RequestInfo fetchByRequestInfoByNameByIgnoreCase(String serviceName) {
         return requestInfoRepository.findByServiceNameIgnoreCase(serviceName);
+    }
+
+    @Override
+    public List<RequestInfo> fetchDashboardServices() {
+        return ServiceList.fetchList();
+    }
+
+    @Override
+    public List<RequestInfo> fetchDashboardServiceByUserId(Long userId) {
+        return ServiceList.fetchList().stream().filter(
+                        p -> p.getMonitorUserId() == userId)
+                .collect(Collectors.toList());
+
     }
 
     @Override
