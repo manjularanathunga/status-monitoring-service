@@ -21,12 +21,12 @@ import java.util.Date;
 public class RequestUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long serviceUserID;
+    private Long userID;
     @NotBlank(message = "Please add the ServiceTask Name")
     @Length(max = 50, min = 0, message = "Monitor User name maximum length 50")
     private String userName;
     private String password;
-    private String userStatus;
+    private Boolean userStatus;
     private Date dateCreated;
 }
 

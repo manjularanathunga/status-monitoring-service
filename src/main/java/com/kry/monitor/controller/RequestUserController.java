@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping(path = "/")
 public class RequestUserController {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(RequestUserController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RequestUserController.class);
 
     @Autowired
     private RequestUserService requestUserService;

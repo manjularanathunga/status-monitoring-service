@@ -2,13 +2,19 @@ package com.kry.monitor.service;
 
 import com.kry.monitor.entity.RequestUser;
 import com.kry.monitor.error.DataNotFoundException;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public interface RequestUserService {
+/**
+ * <p>Title: RequestUserService.java</p>
+ * <p>Description: Methods provided related to the user CRUD services</p>
+ *
+ * @author Manjula Ranathunga
+ * @version 1.0
+ */
 
+
+public interface RequestUserService {
 
     List<RequestUser> fetchUsers() throws DataNotFoundException;
 

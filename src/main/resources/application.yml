@@ -14,6 +14,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
+schedule:
+  fixed:
+    delay: 40000
 
 ---
 spring:
@@ -26,6 +29,10 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
+  task:
+    execution:
+      pool:
+        max-size: 1
 
 ---
 spring:
@@ -45,3 +52,15 @@ management:
     web:
       exposure:
         include: "*"
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    com.howtodoinjava: DEBUG
+    org.hibernate: ERROR
+---
+
+user:
+  name:
+    invalid: User name cannot be blank.

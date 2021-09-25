@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * <p>Title: SpringConfiguration.java</p>
  * <p>Description: Contains springboot configurations</p>
+ *
  * @author Manjula Ranathunga
  * @version 1.0
  */

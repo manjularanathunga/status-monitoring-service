@@ -1,20 +1,30 @@
-package com.kry.monitor.service;
+package com.kry.monitor.impl;
 
 import com.kry.monitor.entity.RequestUser;
 import com.kry.monitor.error.DataNotFoundException;
 import com.kry.monitor.repository.RequestUserRepository;
+import com.kry.monitor.service.RequestUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public class RequestUserServiceImpl implements RequestUserService{
+/**
+ * <p>Title: RequestUserServiceImpl.java</p>
+ * <p>Description: Methods provided related to the Request CRUD services</p>
+ *
+ * @author Manjula Ranathunga
+ * @version 1.0
+ */
 
-    private final Logger LOGGER = LoggerFactory.getLogger(RequestUserServiceImpl.class);
+@Service
+public class RequestUserServiceImpl implements RequestUserService {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(RequestUserServiceImpl.class);
 
     @Autowired
     private RequestUserRepository requestUserRepository;
@@ -23,7 +33,7 @@ public class RequestUserServiceImpl implements RequestUserService{
     public List<RequestUser> fetchUsers() throws DataNotFoundException {
         LOGGER.info("Calling fetchUsers");
         List<RequestUser> usrList = requestUserRepository.findAll();
-        if(usrList.isEmpty())
+        if (usrList.isEmpty())
             throw new DataNotFoundException("Records not available");
 
         return requestUserRepository.findAll();
@@ -37,7 +47,7 @@ public class RequestUserServiceImpl implements RequestUserService{
     @Override
     public RequestUser fetchByUserById(Long id) throws DataNotFoundException {
         Optional<RequestUser> opsUsr = requestUserRepository.findById(id);
-        if(!opsUsr.isPresent()){
+        if (!opsUsr.isPresent()) {
             throw new DataNotFoundException("User not available");
         }
         return opsUsr.get();
@@ -49,22 +59,22 @@ public class RequestUserServiceImpl implements RequestUserService{
     }
 
     @Override
-    public RequestUser updateUser(Long userId, RequestUser requestUser) throws DataNotFoundException {
+    public RequestUser updateUser(Long userId, RequestUser requestUser) throws DataNotFoundException, TransactionSystemException {
         Optional<RequestUser> opsUsr = requestUserRepository.findById(userId);
-        if(!opsUsr.isPresent()){
+        if (!opsUsr.isPresent()) {
             throw new DataNotFoundException("User not available");
         }
         RequestUser dbUser = opsUsr.get();
 
-        if(!dbUser.getUserName().equalsIgnoreCase(requestUser.getUserName())){
+        if (!dbUser.getUserName().equalsIgnoreCase(requestUser.getUserName())) {
             dbUser.setUserName(requestUser.getUserName());
         }
 
-        if(!dbUser.getPassword().equalsIgnoreCase(requestUser.getPassword())){
+        if (!dbUser.getPassword().equalsIgnoreCase(requestUser.getPassword())) {
             dbUser.setPassword(requestUser.getPassword());
         }
 
-        if(!dbUser.getUserStatus().equalsIgnoreCase(requestUser.getUserStatus())){
+        if (!dbUser.getUserStatus() == (requestUser.getUserStatus())) {
             dbUser.setUserStatus(requestUser.getUserStatus());
         }
 

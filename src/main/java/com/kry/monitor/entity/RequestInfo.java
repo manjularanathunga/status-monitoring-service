@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
@@ -27,13 +28,13 @@ public class RequestInfo {
 
     @NotBlank(message = "Please add the ServiceTask Name")
     @Length(max = 50, min = 0)
-    @UniqueElements
+    @Size(max = 20, min = 3, message = "{user.name.invalid}")
+    @NotEmpty(message = "Please enter service name")
     private String serviceName;
     private String requestUrl;
-    @NotBlank(message = "Please add the ServiceTask Description")
-    @Length(max = 250, min = 0)
     private String description;
     private String serviceStatus;
     private Date creationTime;
-    private Long MonitorUserId;
+    private Long monitorUserId;
+    private boolean reqStatus;
 }
