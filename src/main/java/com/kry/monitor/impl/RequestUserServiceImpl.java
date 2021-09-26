@@ -3,6 +3,8 @@ package com.kry.monitor.impl;
 import com.kry.monitor.entity.RequestUser;
 import com.kry.monitor.error.DataNotFoundException;
 import com.kry.monitor.repository.RequestUserRepository;
+import com.kry.monitor.rest.AuthRequest;
+import com.kry.monitor.rest.AuthResponse;
 import com.kry.monitor.service.RequestUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,5 +87,18 @@ public class RequestUserServiceImpl implements RequestUserService {
     @Override
     public RequestUser fetchByUserByNameByIgnoreCase(String userName) {
         return requestUserRepository.findByUserNameIgnoreCase(userName);
+    }
+
+    @Override
+    public AuthResponse authenticate(AuthRequest request) {
+        RequestUser dbUsr = requestUserRepository.findByUserName(request.getUsername());
+        if (dbUsr == null) return null;
+
+        if (!dbUsr.getPassword().equalsIgnoreCase(request.getPassword())) {
+            return null;
+        }
+        return AuthResponse.builder().displayName(dbUsr.getDisplayName())
+                .userID(dbUsr.getUserID())
+                .userName(dbUsr.getUserName()).build();
     }
 }

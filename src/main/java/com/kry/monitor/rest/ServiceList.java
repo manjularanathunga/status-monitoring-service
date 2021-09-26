@@ -24,7 +24,7 @@ public class ServiceList {
     }
 
     public static void pushList(List<RequestInfo> infoList) {
-        LOGGER.info("Service list has been updated...");
+        LOGGER.debug("Service list has been updated...");
         requestInfoListCatch = infoList;
     }
 

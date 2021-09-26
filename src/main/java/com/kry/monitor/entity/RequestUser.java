@@ -26,6 +26,7 @@ public class RequestUser {
     @Length(max = 50, min = 0, message = "Monitor User name maximum length 50")
     private String userName;
     private String password;
+    private String displayName;
     private Boolean userStatus;
     private Date dateCreated;
 }

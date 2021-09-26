@@ -2,6 +2,8 @@ package com.kry.monitor.service;
 
 import com.kry.monitor.entity.RequestUser;
 import com.kry.monitor.error.DataNotFoundException;
+import com.kry.monitor.rest.AuthRequest;
+import com.kry.monitor.rest.AuthResponse;
 
 import java.util.List;
 
@@ -29,4 +31,6 @@ public interface RequestUserService {
     RequestUser fetchByUserByName(String userName);
 
     RequestUser fetchByUserByNameByIgnoreCase(String userName);
+
+    AuthResponse authenticate(AuthRequest request);
 }

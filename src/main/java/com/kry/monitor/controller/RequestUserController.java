@@ -2,6 +2,8 @@ package com.kry.monitor.controller;
 
 import com.kry.monitor.entity.RequestUser;
 import com.kry.monitor.error.DataNotFoundException;
+import com.kry.monitor.rest.AuthRequest;
+import com.kry.monitor.rest.AuthResponse;
 import com.kry.monitor.service.RequestUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +32,14 @@ public class RequestUserController {
     @PostMapping("/user")
     @ResponseBody
     public ResponseEntity<RequestUser> saveUser(@Valid @RequestBody RequestUser requestUser) {
-        return ResponseEntity.ok()
-                .body(requestUserService.saveUser(requestUser));
+        RequestUser user = requestUserService.saveUser(requestUser);
+        if (user != null) {
+            return ResponseEntity.status(201)
+                    .body(user);
+        }
+        return ResponseEntity.status(401).
+                header("Unable to create user").build();
+
     }
 
     @GetMapping("/user/{id}")
@@ -64,4 +72,19 @@ public class RequestUserController {
         return ResponseEntity.ok()
                 .body(requestUserService.fetchByUserByNameByIgnoreCase(userName));
     }
+
+    @RequestMapping(value = "/authenticate", method = RequestMethod.POST, headers = "Accept=application/json")
+    public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request) {
+        LOGGER.info("authenticate Name : {} " + request.getUsername());
+        AuthResponse authResponse = requestUserService.authenticate(request);
+        if (authResponse != null) {
+            return ResponseEntity.status(200)
+                    .body(authResponse);
+        }
+        return ResponseEntity.status(401).
+                header("Logging fail").build();
+
+    }
 }
+
+

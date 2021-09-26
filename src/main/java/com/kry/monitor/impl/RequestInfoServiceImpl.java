@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +27,16 @@ public class RequestInfoServiceImpl implements RequestInfoService {
     @Autowired
     RequestInfoRepository requestInfoRepository;
 
+    private static boolean IsMatch(String s) {
+        try {
+            Pattern patt = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+            Matcher matcher = patt.matcher(s);
+            return matcher.matches();
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
     @Override
     public List<RequestInfo> fetchServices() {
         return requestInfoRepository.findAll();
@@ -32,12 +44,16 @@ public class RequestInfoServiceImpl implements RequestInfoService {
 
     @Override
     public List<RequestInfo> fetchServiceByStatus(boolean b) {
-        return requestInfoRepository.findAllByReqStatus(true);
+        return requestInfoRepository.findAll();
     }
 
     @Override
     public RequestInfo saveRequestInfo(RequestInfo requestInfo) {
-        return requestInfoRepository.save(requestInfo);
+        RequestInfo requestInfo1 = requestInfoRepository.save(requestInfo);
+        if (requestInfo1 != null) {
+            ServiceList.pushList(fetchServiceByStatus(true));
+        }
+        return requestInfo1;
     }
 
     @Override
@@ -81,6 +97,11 @@ public class RequestInfoServiceImpl implements RequestInfoService {
         if (!opsReq.isPresent()) {
             throw new DataNotFoundException("User not available");
         }
+
+        if (!IsMatch(requestInfo.getRequestUrl())) {
+            throw new DataNotFoundException("Given URL is a not valid ...");
+        }
+
         RequestInfo reqInfoDb = opsReq.get();
         reqInfoDb.setServiceName(requestInfo.getServiceName());
         reqInfoDb.setRequestUrl(requestInfo.getRequestUrl());
@@ -111,7 +132,6 @@ public class RequestInfoServiceImpl implements RequestInfoService {
         return ServiceList.fetchList().stream().filter(
                         p -> p.getMonitorUserId() == userId)
                 .collect(Collectors.toList());
-
     }
 
     @Override

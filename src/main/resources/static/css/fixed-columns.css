@@ -1,0 +1,54 @@
+.view {
+    margin: auto;
+    width: auto;
+}
+
+.wrapper {
+    position: relative;
+    overflow: auto;
+    border: 1px solid black;
+    white-space: nowrap;
+}
+
+.sticky-col {
+    position: sticky;
+    position: -webkit-sticky;
+    /*    background-color: white;*/
+}
+
+.first-col {
+    width: 20px;
+    left: 0px;
+
+}
+
+.second-col {
+    width: 20px;
+    left: 20px;
+    background-color: white;
+}
+
+.third-col {
+    width: 20px;
+    left: 40px;
+    background-color: white;
+}
+
+.fourth-col {
+    width: 200px;
+    left: 60px;
+    background-color: white;
+}
+
+#parent {
+    height: 300px;
+}
+
+#fixTable {
+    width: 1300px !important;
+}
+
+.tr-color {
+    background-color: #6c757d;
+!important;
+}

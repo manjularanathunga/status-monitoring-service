@@ -44,13 +44,13 @@ public class StatusMonitoringServiceApplication implements CommandLineRunner {
         ServiceList.pushList(requestInfoService.fetchServiceByStatus(true));
     }
 
-    @Scheduled(fixedDelay = 5000, initialDelay = 1000)
+    @Scheduled(fixedDelay = 20000, initialDelay = 10000)
     public void scheduleFixedRateWithInitialDelayTask() throws InterruptedException {
         LOGGER.info("Calling scheduleFixedRateWithInitialDelayTask ..." + (new Date()));
         restService.pushRequestAsync(ServiceList.fetchList());
     }
 
-    @Scheduled(fixedDelay = 10000, initialDelay = 1000)
+    @Scheduled(fixedDelay = 20000, initialDelay = 0)
     public void updateRequestStatus() throws InterruptedException {
         LOGGER.info("Calling updateRequestStatus ..." + (new Date()));
         requestInfoService.updateDatabase(ServiceStatusCatch.getAllServices());

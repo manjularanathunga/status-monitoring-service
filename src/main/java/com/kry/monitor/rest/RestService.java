@@ -43,6 +43,13 @@ public class RestService {
                                 status(response.getResponseBody()).reqResponseTime(new Date()).build();
                         ServiceStatusCatch.setCatchStatus(String.valueOf(req.getServiceID()), serviceStatus);
                     } catch (InterruptedException | ExecutionException | DataNotFoundException e) {
+                        ServiceStatus serviceStatus = ServiceStatus.builder().
+                                status("FAIL").reqResponseTime(new Date()).build();
+                        try {
+                            ServiceStatusCatch.setCatchStatus(String.valueOf(req.getServiceID()), serviceStatus);
+                        } catch (DataNotFoundException ex) {
+                            LOGGER.info("Request not success with catch " + e.getMessage());
+                        }
                         LOGGER.info("Request not success due to " + e.getMessage());
                     }
                 }, Executors.newCachedThreadPool());

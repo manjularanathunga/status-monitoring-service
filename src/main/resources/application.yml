@@ -53,12 +53,12 @@ management:
       exposure:
         include: "*"
 
-logging:
-  level:
-    root: INFO
-    org.springframework.web: DEBUG
-    com.howtodoinjava: DEBUG
-    org.hibernate: ERROR
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework.web: DEBUG
+#    com.howtodoinjava: DEBUG
+#    org.hibernate: ERROR
 ---
 
 user:

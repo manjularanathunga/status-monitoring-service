@@ -28,7 +28,7 @@ public class RequestInfoController {
     }
 
     @GetMapping("/service/dashboard/{id}")
-    public ResponseEntity<List<RequestInfo>> fetchDashboardServiceByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<RequestInfo>> fetchDashboardServiceByUserId(@PathVariable("id") Long userId) {
         return ResponseEntity.ok()
                 .body(requestInfoService.fetchDashboardServiceByUserId(userId));
     }
@@ -54,10 +54,11 @@ public class RequestInfoController {
     }
 
     @DeleteMapping("/service/{id}")
-    public ResponseEntity<String> deleteRequestInfoService(@PathVariable("id") Long serviceId) throws DataNotFoundException {
+    @ResponseBody
+    public void deleteRequestInfoService(@PathVariable("id") Long serviceId) throws DataNotFoundException {
         requestInfoService.deleteRequestInfo(serviceId);
-        return ResponseEntity.ok()
-                .body("ServiceTask Delete successfully");
+/*        return ResponseEntity.ok()
+                .body("ServiceTask Delete successfully");*/
     }
 
     @PutMapping("/service/{id}")
