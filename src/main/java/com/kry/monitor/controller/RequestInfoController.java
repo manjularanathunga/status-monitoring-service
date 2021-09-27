@@ -1,11 +1,13 @@
 package com.kry.monitor.controller;
 
 import com.kry.monitor.entity.RequestInfo;
+import com.kry.monitor.entity.RequestUser;
 import com.kry.monitor.error.DataNotFoundException;
 import com.kry.monitor.service.RequestInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,9 +30,13 @@ public class RequestInfoController {
     }
 
     @GetMapping("/service/dashboard/{id}")
-    public ResponseEntity<List<RequestInfo>> fetchDashboardServiceByUserId(@PathVariable("id") Long userId) {
-        return ResponseEntity.ok()
-                .body(requestInfoService.fetchDashboardServiceByUserId(userId));
+    public ResponseEntity<List<RequestInfo>> fetchDashboardServiceByUserId(@PathVariable("id") Long requestId) {
+        List<RequestInfo> requestInfo = requestInfoService.fetchDashboardServiceByUserId(requestId);
+        if (requestInfo == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(requestInfo);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(requestInfo);
+        }
     }
 
     @GetMapping("/service")
@@ -45,7 +51,7 @@ public class RequestInfoController {
         RequestInfo info;
         try{
             info = requestInfoService.saveRequestInfo(requestInfo);
-            return ResponseEntity.ok()
+            return ResponseEntity.status(201)
                     .body(info);
         }catch (Exception ex){
             return ResponseEntity.badRequest().build();
@@ -54,8 +60,12 @@ public class RequestInfoController {
 
     @GetMapping("/service/{id}")
     public ResponseEntity<RequestInfo> fetchByRequestInfoServiceById(@PathVariable("id") Long serviceId) throws DataNotFoundException {
-        return ResponseEntity.ok()
-                .body(requestInfoService.fetchByRequestInfoById(serviceId));
+        RequestInfo requestInfo = requestInfoService.fetchByRequestInfoById(serviceId);
+        if (requestInfo == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(requestInfo);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(requestInfo);
+        }
     }
 
     @GetMapping("/servicedel/{id}")
@@ -67,19 +77,21 @@ public class RequestInfoController {
 
     @PutMapping("/service/{id}")
     public ResponseEntity<RequestInfo> updateRequestInfoService(@PathVariable("id") Long serviceId, @RequestBody RequestInfo requestInfo) throws DataNotFoundException {
-        return ResponseEntity.ok()
-                .body(requestInfoService.updateRequestInfo(serviceId, requestInfo));
+        RequestInfo requestInfo1 = requestInfoService.updateRequestInfo(serviceId, requestInfo);
+        if (requestInfo == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(requestInfo1);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(requestInfo1);
+        }
     }
 
     @GetMapping("/service/name/{name}")
     public ResponseEntity<RequestInfo> fetchByRequestInfoServiceByName(@PathVariable("name") String serviceName) {
-        return ResponseEntity.ok()
-                .body(requestInfoService.fetchByRequestInfoByName(serviceName));
-    }
-
-    @GetMapping("/service/casename/{name}")
-    public ResponseEntity<RequestInfo> fetchByRequestInfoServiceByNameByIgnoreCase(@PathVariable("name") String serviceName) {
-        return ResponseEntity.ok()
-                .body(requestInfoService.fetchByRequestInfoByNameByIgnoreCase(serviceName));
+        RequestInfo requestInfo1 = requestInfoService.fetchByRequestInfoByName(serviceName);
+        if (requestInfo1 == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(requestInfo1);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(requestInfo1);
+        }
     }
 }

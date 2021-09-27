@@ -50,7 +50,6 @@ public class RequestUserController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(requestUser);
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(requestUser);
-
         }
     }
 

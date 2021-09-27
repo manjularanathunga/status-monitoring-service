@@ -113,11 +113,6 @@ public class RequestInfoServiceImpl implements RequestInfoService {
     }
 
     @Override
-    public RequestInfo fetchByRequestInfoByNameByIgnoreCase(String serviceName) {
-        return requestInfoRepository.findByServiceNameIgnoreCase(serviceName);
-    }
-
-    @Override
     public List<RequestInfo> fetchDashboardServices() {
         return ServiceList.fetchList();
     }

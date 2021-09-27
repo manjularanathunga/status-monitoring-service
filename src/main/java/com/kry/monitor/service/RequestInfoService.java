@@ -30,8 +30,6 @@ public interface RequestInfoService {
 
     RequestInfo fetchByRequestInfoByName(String serviceName);
 
-    RequestInfo fetchByRequestInfoByNameByIgnoreCase(String serviceName);
-
     List<RequestInfo> fetchDashboardServices();
 
     List<RequestInfo> fetchDashboardServiceByUserId(Long userId);

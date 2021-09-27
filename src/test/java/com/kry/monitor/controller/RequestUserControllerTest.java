@@ -3,6 +3,7 @@ package com.kry.monitor.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kry.monitor.entity.RequestUser;
 import com.kry.monitor.service.RequestUserService;
+import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest() //webEnvironment = SpringBootTest.WebEnvironment.MOCK
+@SpringBootTest()
 @AutoConfigureMockMvc
 class RequestUserControllerTest {
 
@@ -51,8 +52,9 @@ class RequestUserControllerTest {
 
     }
 
+    @SneakyThrows
     @Test
-    void saveUser() throws Exception {
+    void saveUser() {
         RequestUser userInput = RequestUser.builder().userName("abcd").password("ssss")
                 .dateCreated(new Date()).userStatus(true).build();
         Mockito.when(requestUserService.saveUser(userInput)).thenReturn(requestUser);
