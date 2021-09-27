@@ -5,16 +5,15 @@ import com.kry.monitor.error.DataNotFoundException;
 import com.kry.monitor.repository.RequestInfoRepository;
 import com.kry.monitor.rest.ServiceList;
 import com.kry.monitor.rest.ServiceStatus;
+import com.kry.monitor.rest.ServiceStatusCatch;
 import com.kry.monitor.service.RequestInfoService;
+import org.apache.commons.validator.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,16 +26,6 @@ public class RequestInfoServiceImpl implements RequestInfoService {
     @Autowired
     RequestInfoRepository requestInfoRepository;
 
-    private static boolean IsMatch(String s) {
-        try {
-            Pattern patt = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
-            Matcher matcher = patt.matcher(s);
-            return matcher.matches();
-        } catch (RuntimeException e) {
-            return false;
-        }
-    }
-
     @Override
     public List<RequestInfo> fetchServices() {
         return requestInfoRepository.findAll();
@@ -48,7 +37,11 @@ public class RequestInfoServiceImpl implements RequestInfoService {
     }
 
     @Override
-    public RequestInfo saveRequestInfo(RequestInfo requestInfo) {
+    public RequestInfo saveRequestInfo(RequestInfo requestInfo) throws Exception {
+        if(!IsMatch(requestInfo.getRequestUrl())){
+            throw new Exception("Invalid url "+ requestInfo.getRequestUrl());
+        }
+
         RequestInfo requestInfo1 = requestInfoRepository.save(requestInfo);
         if (requestInfo1 != null) {
             ServiceList.pushList(fetchServiceByStatus(true));
@@ -57,17 +50,16 @@ public class RequestInfoServiceImpl implements RequestInfoService {
     }
 
     @Override
-    public RequestInfo updateStatusById(Long serviceId, String status) throws DataNotFoundException {
-        LOGGER.info("Updating status of the service ....");
+    public RequestInfo updateStatusById(Long serviceId, ServiceStatus serviceStatus) throws DataNotFoundException {
         Optional<RequestInfo> opsReq = requestInfoRepository.findById(serviceId);
         if (!opsReq.isPresent()) {
             throw new DataNotFoundException("Request record not available");
         }
         RequestInfo dbReqInfo = opsReq.get();
-        dbReqInfo.setServiceStatus(status);
-        dbReqInfo.setCreationTime(new Date());
+        dbReqInfo.setServiceStatus(serviceStatus.getStatus());
+        dbReqInfo.setCreationTime(serviceStatus.getUpdatedAt());
         RequestInfo requestInfo = requestInfoRepository.saveAndFlush(dbReqInfo);
-        ServiceList.pushList(fetchServiceByStatus(true));
+        databaseSyncToCatch();
         return requestInfo;
     }
 
@@ -84,10 +76,11 @@ public class RequestInfoServiceImpl implements RequestInfoService {
     public void deleteRequestInfo(Long serviceId) throws DataNotFoundException {
         Optional<RequestInfo> opsReq = requestInfoRepository.findById(serviceId);
         if (!opsReq.isPresent()) {
-            throw new DataNotFoundException("User not available");
+            throw new DataNotFoundException("Service not available");
         }
         RequestInfo service = opsReq.get();
         requestInfoRepository.delete(opsReq.get());
+        databaseSyncToCatch();
         LOGGER.info("Service [" + service.getServiceName() + "]removed from the system ....");
     }
 
@@ -107,9 +100,11 @@ public class RequestInfoServiceImpl implements RequestInfoService {
         reqInfoDb.setRequestUrl(requestInfo.getRequestUrl());
         reqInfoDb.setDescription(requestInfo.getDescription());
         reqInfoDb.setMonitorUserId(requestInfo.getMonitorUserId());
-        reqInfoDb.setReqStatus(requestInfo.isReqStatus());
+        reqInfoDb.setStatus(requestInfo.isStatus());
         reqInfoDb.setCreationTime(new Date());
-        return requestInfoRepository.save(reqInfoDb);
+        reqInfoDb = requestInfoRepository.save(reqInfoDb);
+        databaseSyncToCatch();
+        return reqInfoDb;
     }
 
     @Override
@@ -134,16 +129,46 @@ public class RequestInfoServiceImpl implements RequestInfoService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public void updateDatabase(Map<String, ServiceStatus> servicesMap) {
-        servicesMap.forEach((serviceId, serviceStatus) -> {
-            try {
-                updateStatusById(Long.parseLong(serviceId), serviceStatus.getStatus());
-                ServiceList.pushList(fetchServiceByStatus(true));
-            } catch (DataNotFoundException e) {
-                LOGGER.info("Unable to Update status of the service ...." + e.getMessage());
-            }
-        });
+    public void catchSyncToDatabase() {
+        try {
+            ServiceStatusCatch.getAllServices().forEach((k,v) -> {
+                try {
+                    updateStatusById(Long.parseLong(v.getServiceID()), v);
+                } catch (DataNotFoundException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            LOGGER.info("catch Sync To Database successful...");
+        } catch (Exception e) {
+            LOGGER.info("Unable to Update status of the service ...." + e.getMessage());
+        }
     }
+
+    public void databaseSyncToCatch() {
+        try {
+            ServiceList.pushList(fetchServices());
+        } catch (Exception e) {
+            LOGGER.info("Unable to Update status of the service ...." + e.getMessage());
+        }
+        //LOGGER.info("Database Sync To Catch successful...");
+    }
+
+    public boolean urlValidator(String url){
+        String[] schemes = {"http","https"};
+        UrlValidator urlValidator = new UrlValidator(schemes);
+        return urlValidator.isValid(url);
+    }
+
+    private static boolean IsMatch(String s) {
+        try {
+            Pattern patt = Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+            Matcher matcher = patt.matcher(s);
+            return matcher.matches();
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
 
 }

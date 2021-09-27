@@ -3,10 +3,13 @@ package com.kry.monitor.rest;
 import com.kry.monitor.StatusMonitoringServiceApplication;
 import com.kry.monitor.entity.RequestInfo;
 import com.kry.monitor.error.DataNotFoundException;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.asynchttpclient.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @Service
@@ -28,34 +32,49 @@ public class RestService {
     @Autowired
     AsyncHttpClient asyncHttpClient;
 
+    @Value("${kry.default.response}")
+    private String defaultResponse;
+
+    @Value("${kry.default.condition}")
+    private String defaultCondition;
+
     @Async
     public void pushRequestAsync(List<RequestInfo> infoList) {
         try {
             for (RequestInfo req : infoList) {
+                String currentService = defaultResponse;
+                String serviceKey = req.getServiceID()+"_"+req.getServiceName();
+
                 Request request = Dsl.get(req.getRequestUrl()).build();
                 ListenableFuture<Response> listenableFuture = asyncHttpClient
                         .executeRequest(request);
                 listenableFuture.addListener(() -> {
-                    Response response = null;
+                    ServiceStatus serviceStatus = new ServiceStatus();
                     try {
-                        response = listenableFuture.get();
-                        ServiceStatus serviceStatus = ServiceStatus.builder().
-                                status(response.getResponseBody()).reqResponseTime(new Date()).build();
-                        ServiceStatusCatch.setCatchStatus(String.valueOf(req.getServiceID()), serviceStatus);
-                    } catch (InterruptedException | ExecutionException | DataNotFoundException e) {
-                        ServiceStatus serviceStatus = ServiceStatus.builder().
-                                status("FAIL").reqResponseTime(new Date()).build();
-                        try {
-                            ServiceStatusCatch.setCatchStatus(String.valueOf(req.getServiceID()), serviceStatus);
-                        } catch (DataNotFoundException ex) {
-                            LOGGER.info("Request not success with catch " + e.getMessage());
+                        serviceStatus = ServiceStatusCatch.getCatchStatus(serviceKey);
+                        if(serviceStatus == null){
+                            serviceStatus = ServiceStatus.builder().serviceID(req.getServiceID().toString()).serviceName(req.getServiceName()).updatedAt(new Date()).build();
                         }
-                        LOGGER.info("Request not success due to " + e.getMessage());
+                        LOGGER.debug("Service name results {} "+ serviceStatus.getServiceName() + " | " +listenableFuture.get().getResponseBody());
+                        if(defaultCondition.contains(listenableFuture.get().getResponseBody())){
+                            serviceStatus.setStatus(listenableFuture.get().getResponseBody());
+                        }else{
+                            serviceStatus.setStatus(currentService);
+                        }
+                    } catch (InterruptedException | ExecutionException e) {
+                        LOGGER.info("Request (e1) not success due to " + e.getMessage());
+                        serviceStatus.setStatus(currentService);
+                    }
+                    try {
+                        ServiceStatusCatch.setCatchStatus(serviceKey,serviceStatus);
+                    } catch (DataNotFoundException e) {
+                        LOGGER.info("Request (e2) not success due to " + e.getMessage());
                     }
                 }, Executors.newCachedThreadPool());
             }
+            LOGGER.debug("ServiceStatusCatch.print() "+ ServiceStatusCatch.print());
         } catch (Exception e) {
-            LOGGER.info("Request not success due to " + e.getMessage());
+            LOGGER.info("Request (e3) not success due to " + e.getMessage());
             e.printStackTrace();
         }
     }

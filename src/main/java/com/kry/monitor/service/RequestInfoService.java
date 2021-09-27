@@ -14,11 +14,13 @@ public interface RequestInfoService {
 
     List<RequestInfo> fetchServiceByStatus(boolean b);
 
-    RequestInfo saveRequestInfo(RequestInfo requestInfo);
+    RequestInfo saveRequestInfo(RequestInfo requestInfo) throws Exception;
 
-    RequestInfo updateStatusById(Long serviceId, String serviceStatus) throws DataNotFoundException;
+    RequestInfo updateStatusById(Long serviceId, ServiceStatus serviceStatus) throws DataNotFoundException;
 
-    void updateDatabase(Map<String, ServiceStatus> serviceList);
+    void catchSyncToDatabase();
+
+    void databaseSyncToCatch();
 
     RequestInfo fetchByRequestInfoById(Long serviceId) throws DataNotFoundException;
 

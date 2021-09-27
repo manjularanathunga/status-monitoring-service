@@ -41,24 +41,28 @@ public class RequestInfoController {
 
     @PostMapping("/service")
     @ResponseBody
-    public ResponseEntity<RequestInfo> saveRequestInfo(@Valid @RequestBody RequestInfo requestInfo) {
-        return ResponseEntity.ok()
-                .body(requestInfoService.saveRequestInfo(requestInfo));
-
+    public ResponseEntity<RequestInfo> saveRequestInfo(@Valid @RequestBody RequestInfo requestInfo) throws DataNotFoundException {
+        RequestInfo info;
+        try{
+            info = requestInfoService.saveRequestInfo(requestInfo);
+            return ResponseEntity.ok()
+                    .body(info);
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/service/{id}")
-    public ResponseEntity<RequestInfo> fetchByRequestInfoServiceById(@PathVariable Long serviceId) throws DataNotFoundException {
+    public ResponseEntity<RequestInfo> fetchByRequestInfoServiceById(@PathVariable("id") Long serviceId) throws DataNotFoundException {
         return ResponseEntity.ok()
                 .body(requestInfoService.fetchByRequestInfoById(serviceId));
     }
 
-    @DeleteMapping("/service/{id}")
-    @ResponseBody
-    public void deleteRequestInfoService(@PathVariable("id") Long serviceId) throws DataNotFoundException {
+    @GetMapping("/servicedel/{id}")
+    public ResponseEntity<String> deleteRequestInfoService(@PathVariable("id") Long serviceId) throws DataNotFoundException {
         requestInfoService.deleteRequestInfo(serviceId);
-/*        return ResponseEntity.ok()
-                .body("ServiceTask Delete successfully");*/
+        return ResponseEntity.ok()
+                .body("ServiceTask Delete successfully");
     }
 
     @PutMapping("/service/{id}")

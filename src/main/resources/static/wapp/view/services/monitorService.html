@@ -26,14 +26,14 @@
                 <tr>
                     <th>ID</th>
                     <th>Service Name</th>
-                    <th>Req Url</th>
-                    <th>serviceStatus</th>
+                    <th>Request Url</th>
+                    <th>Service Status</th>
                     <th class="first-col" width="2%">&nbsp;</th>
                     <th class="first-col" width="2%">&nbsp;</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr data-toggle="tooltip" ng-dblclick="showUI(itm,'edit')"
+                <tr data-toggle="tooltip" ng-dblclick="showUI(itm,'edit')" ng-style="{'background-color': record_colour(itm.serviceStatus)}"
                     ng-repeat="itm in servicesList | filter : searchKeyword" title="Description: {{itm.description}}">
                     <th>{{itm.serviceID}}</th>
                     <th>{{itm.serviceName}}</th>
@@ -120,21 +120,13 @@
                             <div class="col-12">
                                 <div class="row">
                                     <div class="col-sm-4">
-                                        <label class="font-size-sm">Service Status</label>
+                                        <label class="font-size-sm">Status</label>
                                     </div>
                                     <div class="col-sm-8 p-0 m-0">
-
-                                        <label class="font-size-sm">ACTIVE</label> <input class="form-group"
-                                                                                          name="status"
-                                                                                          ng-disabled="uicompo.itemDisabled"
-                                                                                          ng-model="service.serviceStatus" type="radio"
-                                                                                          value="ACTIVE"/>
-                                        <label class="font-size-sm">INACTIVE</label> <input class="form-group"
-                                                                                            name="status"
-                                                                                            ng-disabled="uicompo.itemDisabled"
-                                                                                            ng-model="service.serviceStatus"
-                                                                                            type="radio"
-                                                                                            value="INACTIVE"/>
+                                        <input
+                                                type="checkbox"
+                                                ng-model="service.status"
+                                        >
                                     </div>
                                 </div>
                             </div>

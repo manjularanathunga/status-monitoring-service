@@ -28,7 +28,7 @@ public class RequestInfo {
 
     @NotBlank(message = "Please add the ServiceTask Name")
     @Length(max = 50, min = 0)
-    @Size(max = 20, min = 3, message = "{user.name.invalid}")
+    @Size(max = 20, min = 1, message = "{user.name.invalid}")
     @NotEmpty(message = "Please enter service name")
     private String serviceName;
     private String requestUrl;
@@ -36,5 +36,5 @@ public class RequestInfo {
     private String serviceStatus;
     private Date creationTime;
     private Long monitorUserId;
-    private boolean reqStatus;
+    private boolean status;
 }

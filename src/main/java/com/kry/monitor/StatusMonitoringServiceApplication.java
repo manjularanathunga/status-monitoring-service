@@ -2,6 +2,7 @@ package com.kry.monitor;
 
 import com.kry.monitor.rest.RestService;
 import com.kry.monitor.rest.ServiceList;
+import com.kry.monitor.rest.ServiceStatus;
 import com.kry.monitor.rest.ServiceStatusCatch;
 import com.kry.monitor.service.RequestInfoService;
 import org.asynchttpclient.AsyncHttpClient;
@@ -19,7 +20,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 
 @SpringBootApplication
@@ -31,8 +35,7 @@ public class StatusMonitoringServiceApplication implements CommandLineRunner {
     RequestInfoService requestInfoService;
     @Autowired
     private RestService restService;
-    @Value("${schedule.fixed.delay}")
-    private long fixedDelay;
+
 
     public static void main(String[] args) {
         SpringApplication.run(StatusMonitoringServiceApplication.class, args);
@@ -41,19 +44,20 @@ public class StatusMonitoringServiceApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         LOGGER.info("Status Monitoring Service Application Started ...!");
-        ServiceList.pushList(requestInfoService.fetchServiceByStatus(true));
+        requestInfoService.databaseSyncToCatch();
+        LOGGER.info("ServiceStatusCatch(databaseSyncToCatch) -> " + ServiceStatusCatch.getAllServices().size());
     }
 
-    @Scheduled(fixedDelay = 20000, initialDelay = 10000)
-    public void scheduleFixedRateWithInitialDelayTask() throws InterruptedException {
-        LOGGER.info("Calling scheduleFixedRateWithInitialDelayTask ..." + (new Date()));
+    @Scheduled(fixedDelayString = "${schedule.http.fixed.delay}", initialDelayString = "${schedule.http.initial.delay}")
+    public void schedulePushHttpRequest() throws InterruptedException {
+        LOGGER.info("Calling schedule Push HttpRequest ..." + (new Date()));
         restService.pushRequestAsync(ServiceList.fetchList());
     }
 
-    @Scheduled(fixedDelay = 20000, initialDelay = 0)
-    public void updateRequestStatus() throws InterruptedException {
-        LOGGER.info("Calling updateRequestStatus ..." + (new Date()));
-        requestInfoService.updateDatabase(ServiceStatusCatch.getAllServices());
+    @Scheduled(fixedDelayString = "${schedule.dbsync.fixed.delay}", initialDelayString = "${schedule.dbsync.initial.delay}")
+    public void catchSyncToDatabase() throws InterruptedException {
+        LOGGER.info("Calling schedule DB Sync ..." + (new Date()));
+        requestInfoService.catchSyncToDatabase();
     }
 
     @Bean

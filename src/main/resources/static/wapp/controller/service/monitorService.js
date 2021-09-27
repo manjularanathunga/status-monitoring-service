@@ -12,7 +12,7 @@ app.controller('MonitorService', function ($scope, $rootScope, $http, $interval,
         $scope.uicompo.loader = true;
         Http.GetAll("/service/dashboard/" + $rootScope.loggedData.currentUserId)
             .then(function (response) {
-                if (response.status == 200) {
+                if (response.status == 201 || response.status == 200) {
                     $scope.servicesList = response.data;
                     $scope.uicompo.showContent = true;
                 } else {
@@ -29,7 +29,7 @@ app.controller('MonitorService', function ($scope, $rootScope, $http, $interval,
             $scope.heading = 'Add Service Details';
             $scope.uicompo.itemDisabled = false;
             $scope.service = {};
-            $scope.service.status = 'ACTIVE';
+            $scope.service.status = 'true';
         } else if ('edit' === $scope.actionType) {
             $scope.heading = 'Edit Service Details :' + itm.id;
             $scope.uicompo.itemDisabled = false;
@@ -45,15 +45,16 @@ app.controller('MonitorService', function ($scope, $rootScope, $http, $interval,
     $scope.saveModal = function () {
         $scope.uicompo.loader = true;
         $scope.service.monitorUserId = $rootScope.loggedData.currentUserId;
-        $scope.service.serviceStatus = true;
+        $scope.service.serviceStatus = '';
         if ('add' === $scope.actionType || 'edit' === $scope.actionType) {
             Http.Create('/service', $scope.service)
                 .then(function (response) {
                     console.log('saveModal > ' + JSON.stringify(response));
-                    if (response.status == 201) {
+                    if (response.status == 201 || response.status == 200) {
+                        Pop.timeMsg('success', $rootScope.pageTitle, 'Service entry has been added successfully to the system', 2000);
                         loadServices();
                     } else {
-                        Pop.timeMsg('error', $rootScope.pageTitle, ' SAVE/UPDATE RECORD ', 2000);
+                        Pop.timeMsg('error', $rootScope.pageTitle, 'Record saving is unsuccessful', 2000);
                     }
                     $scope.uicompo.loader = false;
                 }, function (response) {
@@ -63,11 +64,11 @@ app.controller('MonitorService', function ($scope, $rootScope, $http, $interval,
             });
 
         } else if ('delete' === $scope.actionType) {
-            Http.Delete('service?id=' + $scope.service.serviceID).then(function (response) {
-                if (response.status == 200) {
+            Http.GetAll('/servicedel/' + $scope.service.serviceID).then(function (response) {
+                if (response.status == 201 || response.status == 200) {
                     loadServices();
                 } else {
-                    Pop.timeMsg('error', $rootScope.pageTitle, ' DELETE RECORD ', 2000);
+                    Pop.timeMsg('error', $rootScope.pageTitle, 'Record removing is unsuccessful', 2000);
                 }
                 $scope.uicompo.loader = false;
             }, function (response) {
@@ -77,6 +78,14 @@ app.controller('MonitorService', function ($scope, $rootScope, $http, $interval,
             });
         }
     };
+
+    $scope.record_colour = function (status) {
+        if(status === 'FAIL'){
+            return "#ffd7d8"
+        }else{
+            return "#fff9f1";
+        }
+    }
 
     loadServices();
 

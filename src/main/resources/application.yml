@@ -4,6 +4,7 @@ spring:
   profiles:
     active: dev
 ---
+# Database settings (Database shifting can be done by changing tht properties below.)
 spring:
   profiles: dev
   datasource:
@@ -14,53 +15,42 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: true
+
+#Settings for http response
+kry:
+  default:
+    response: FAIL
+    condition : PASS,FAIL
+
+#Used to manage the DB anc cache.
 schedule:
-  fixed:
-    delay: 40000
+  dbsync:
+    fixed:
+      delay: 30000
+    initial:
+      delay: 5000
+  http:
+    fixed:
+      delay: 20000
+    initial:
+      delay: 1000
 
----
-spring:
-  profiles: qa
-  datasource:
-    username: postgres
-    password: docker
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/KRYQAVDB
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: true
-  task:
-    execution:
-      pool:
-        max-size: 1
+#Validation rules messages
+user:
+  name:
+    invalid: User name cannot be blank.
 
----
-spring:
-  profiles: prod
-  datasource:
-    username: postgres
-    password: docker
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/KRYPRODVDB
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: true
-
----
+--- # Settings ------
+#end points
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-
+# ---Setting for loggin
 #logging:
 #  level:
 #    root: INFO
 #    org.springframework.web: DEBUG
 #    com.howtodoinjava: DEBUG
 #    org.hibernate: ERROR
----
-
-user:
-  name:
-    invalid: User name cannot be blank.

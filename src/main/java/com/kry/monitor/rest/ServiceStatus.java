@@ -13,6 +13,8 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class ServiceStatus {
+    private String serviceName;
+    private String serviceID;
     private String status;
-    private Date reqResponseTime;
+    private Date updatedAt;
 }

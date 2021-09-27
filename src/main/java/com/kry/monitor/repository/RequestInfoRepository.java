@@ -12,7 +12,7 @@ public interface RequestInfoRepository extends JpaRepository<RequestInfo, Long> 
     @Override
     List<RequestInfo> findAll();
 
-    List<RequestInfo> findAllByReqStatus(Boolean status);
+    List<RequestInfo> findAllByStatus(Boolean status);
 
     List<RequestInfo> findAllByMonitorUserId(Long monitorUserId);
 
