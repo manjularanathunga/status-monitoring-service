@@ -2,7 +2,7 @@ server:
   port: 8082
 spring:
   profiles:
-    active: mysql
+    active: postgres
 ---
 # Database settings (Database shifting can be done by changing tht properties below.)
 spring:
