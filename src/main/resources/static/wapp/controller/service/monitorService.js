@@ -80,8 +80,10 @@ app.controller('MonitorService', function ($scope, $rootScope, $http, $interval,
     };
 
     $scope.record_colour = function (status) {
-        if(status === 'FAIL'){
-            return "#ffd7d8"
+        if(status === 'FAIL') {
+            return "#ffd7d8";
+        }else if(status === 'PASS'){
+            return "#b6ffdd";
         }else{
             return "#fff9f1";
         }

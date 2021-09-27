@@ -3,8 +3,6 @@ package com.kry.monitor.rest;
 import com.kry.monitor.StatusMonitoringServiceApplication;
 import com.kry.monitor.entity.RequestInfo;
 import com.kry.monitor.error.DataNotFoundException;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
 import org.asynchttpclient.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 @Service
@@ -51,7 +48,7 @@ public class RestService {
                 listenableFuture.addListener(() -> {
                     ServiceStatus serviceStatus = new ServiceStatus();
                     try {
-                        serviceStatus = ServiceStatusCatch.getCatchStatus(serviceKey);
+                        serviceStatus = ServiceStatusCache.getCatchStatus(serviceKey);
                         if(serviceStatus == null){
                             serviceStatus = ServiceStatus.builder().serviceID(req.getServiceID().toString()).serviceName(req.getServiceName()).updatedAt(new Date()).build();
                         }
@@ -66,13 +63,13 @@ public class RestService {
                         serviceStatus.setStatus(currentService);
                     }
                     try {
-                        ServiceStatusCatch.setCatchStatus(serviceKey,serviceStatus);
+                        ServiceStatusCache.setCacheStatus(serviceKey,serviceStatus);
                     } catch (DataNotFoundException e) {
                         LOGGER.info("Request (e2) not success due to " + e.getMessage());
                     }
                 }, Executors.newCachedThreadPool());
             }
-            LOGGER.debug("ServiceStatusCatch.print() "+ ServiceStatusCatch.print());
+            LOGGER.debug("ServiceStatusCache.print() "+ ServiceStatusCache.print());
         } catch (Exception e) {
             LOGGER.info("Request (e3) not success due to " + e.getMessage());
             e.printStackTrace();

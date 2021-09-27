@@ -28,6 +28,7 @@
                     <th>Service Name</th>
                     <th>Request Url</th>
                     <th>Service Status</th>
+                    <th>Update On</th>
                     <th class="first-col" width="2%">&nbsp;</th>
                     <th class="first-col" width="2%">&nbsp;</th>
                 </tr>
@@ -39,6 +40,7 @@
                     <th>{{itm.serviceName}}</th>
                     <th>{{itm.requestUrl}}</th>
                     <th>{{itm.serviceStatus}}</th>
+                    <th>{{itm.creationTime| date:'yy/MM/dd hh:ss'}}</th>
                     <td class="first-col">
                         <div class="d-flex justify-content-center">
                             <button class="btn btn-link btn-sm" data-toggle="tooltip" ng-click="showUI(itm,'edit')"

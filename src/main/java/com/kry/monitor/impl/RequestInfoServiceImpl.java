@@ -5,7 +5,7 @@ import com.kry.monitor.error.DataNotFoundException;
 import com.kry.monitor.repository.RequestInfoRepository;
 import com.kry.monitor.rest.ServiceList;
 import com.kry.monitor.rest.ServiceStatus;
-import com.kry.monitor.rest.ServiceStatusCatch;
+import com.kry.monitor.rest.ServiceStatusCache;
 import com.kry.monitor.service.RequestInfoService;
 import org.apache.commons.validator.UrlValidator;
 import org.slf4j.Logger;
@@ -131,7 +131,7 @@ public class RequestInfoServiceImpl implements RequestInfoService {
 
     public void catchSyncToDatabase() {
         try {
-            ServiceStatusCatch.getAllServices().forEach((k,v) -> {
+            ServiceStatusCache.getAllServices().forEach((k, v) -> {
                 try {
                     updateStatusById(Long.parseLong(v.getServiceID()), v);
                 } catch (DataNotFoundException e) {
