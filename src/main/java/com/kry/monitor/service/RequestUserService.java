@@ -30,7 +30,5 @@ public interface RequestUserService {
 
     RequestUser fetchByUserByName(String userName);
 
-    RequestUser fetchByUserByNameByIgnoreCase(String userName);
-
     AuthResponse authenticate(AuthRequest request);
 }

@@ -8,6 +8,7 @@ import com.kry.monitor.service.RequestUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,14 +39,19 @@ public class RequestUserController {
                     .body(user);
         }
         return ResponseEntity.status(401).
-                header("Unable to create user").build();
+                header("Unable to create the user").build();
 
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<RequestUser> fetchByUserServiceById(@PathVariable Long id) throws DataNotFoundException {
-        return ResponseEntity.ok()
-                .body(requestUserService.fetchByUserById(id));
+        RequestUser requestUser = requestUserService.fetchByUserById(id);
+        if (requestUser == null) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(requestUser);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(requestUser);
+
+        }
     }
 
     @DeleteMapping("/user/{id}")
@@ -63,14 +69,12 @@ public class RequestUserController {
 
     @GetMapping("/user/name/{name}")
     public ResponseEntity<RequestUser> fetchByUserServiceByName(@PathVariable("name") String userName) {
+        RequestUser requestUser = requestUserService.fetchByUserByName(userName);
+        if(requestUser == null ){
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok()
-                .body(requestUserService.fetchByUserByName(userName));
-    }
-
-    @GetMapping("/user/casename/{name}")
-    public ResponseEntity<RequestUser> fetchByUserServiceByNameByIgnoreCase(@PathVariable("name") String userName) {
-        return ResponseEntity.ok()
-                .body(requestUserService.fetchByUserByNameByIgnoreCase(userName));
+                .body(requestUser);
     }
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST, headers = "Accept=application/json")

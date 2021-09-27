@@ -85,11 +85,6 @@ public class RequestUserServiceImpl implements RequestUserService {
     }
 
     @Override
-    public RequestUser fetchByUserByNameByIgnoreCase(String userName) {
-        return requestUserRepository.findByUserNameIgnoreCase(userName);
-    }
-
-    @Override
     public AuthResponse authenticate(AuthRequest request) {
         RequestUser dbUsr = requestUserRepository.findByUserName(request.getUsername());
         if (dbUsr == null) return null;

@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository;
 public interface RequestUserRepository extends JpaRepository<RequestUser, Long> {
 
     RequestUser findByUserName(String userName);
-
-    RequestUser findByUserNameIgnoreCase(String userName);
 }
